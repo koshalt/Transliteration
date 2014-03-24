@@ -14,20 +14,20 @@ import java.util.Map;
 public class TransliterationEngine {
 
     // Transliterates a given string from English to Hindi using ITRANS encoding
+    // Since ITRANS is a case-sensitive encoding, the best results would be achieved by
+    // passing the data in all lower case
     public String transliterate(String data)
     {
         String[] words = data.split(" ");
+        StringBuilder result = new StringBuilder();
         CharacterMapping englishMapping = new ItransAsciiMapping();
         CharacterMapping hindiMapping = new HindiMapping();
-        for (int i = 0; i < words.length; i++) {
-            words[i] = transliterateHelper(words[i], englishMapping, hindiMapping);
+        for (String currentWord : words) {
+            result.append(transliterateHelper(currentWord, englishMapping, hindiMapping));
+            result.append(" ");
         }
 
-        StringBuilder result = new StringBuilder();
-        for (String currentWord : words) {
-            result.append(currentWord);
-        }
-        return result.toString();
+        return result.toString().trim();
     }
 
     private String transliterateHelper(String data, CharacterMapping englishMapping, CharacterMapping hindiMapping) {
@@ -117,12 +117,22 @@ public class TransliterationEngine {
 
         HashMap<String, String[]> fromMapping = from.getMapping();
         HashMap<String, String[]> toMapping = to.getMapping();
+        HashMap<String, String[]> alternates = from.getAlternateMapping();
         for (Map.Entry<String, String[]> fromEntry : fromMapping.entrySet()) {
             String[] fromTokens = fromEntry.getValue();
             String[] toTokens = toMapping.get(fromEntry.getKey());
 
+            // create mapping for for all letters and alternates
             for (int i = 0; i < fromTokens.length; i++) {
-                tokenMapping.put(fromTokens[i], toTokens[i]);
+                String key = fromTokens[i];
+                String value = toTokens[i];
+                tokenMapping.put(key, value);
+                String[] alt = alternates.get(key);
+                if (alt != null) {
+                    for (String currentAlternate : alt) {
+                        tokenMapping.put(currentAlternate, value);
+                    }
+                }
             }
         }
         return tokenMapping;

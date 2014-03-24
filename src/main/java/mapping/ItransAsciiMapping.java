@@ -29,9 +29,11 @@ public class ItransAsciiMapping implements CharacterMapping {
 
     private static String[] other = "q K G z .D .Dh f Y R".split(" ");
 
+
+
     private HashMap<String, String[]> mapping;
 
-    public ItransAsciiMapping(){
+    public ItransAsciiMapping() {
         mapping = new HashMap<String, String[]>();
         mapping.put("vowels", vowels);
         mapping.put("otherMarks", otherMarks);
@@ -46,7 +48,37 @@ public class ItransAsciiMapping implements CharacterMapping {
         mapping.put("virama", virama);
     }
 
-    public HashMap<String, String[]> getMapping(){
+    private HashMap<String, String[]> createAlternateMapping() {
+        HashMap<String, String[]> alt = new HashMap<>();
+        alt.put("A", new String[] { "aa" });
+        alt.put("I", new String[] { "ii", "ee" });
+        alt.put("U", new String[] { "uu", "oo" });
+        alt.put("RRi", new String[] { "R^i" });
+        alt.put("RRI", new String[] { "R^I" });
+        alt.put("LLi", new String[] { "L^i" });
+        alt.put("LLI", new String[] { "L^I" });
+        alt.put("M", new String[] { ".m", ".n" });
+        alt.put("~N", new String[] { "N^" });
+        alt.put("ch", new String[] { "c" });
+        alt.put("Ch", new String[] { "C", "chh" });
+        alt.put("~n", new String[] { "JN" });
+        alt.put("v", new String[] { "w" });
+        alt.put("Sh", new String[] { "S", "shh" });
+        alt.put("kSh", new String[] { "kS", "x" });
+        alt.put("j~n", new String[] { "GY", "dny" });
+        alt.put("OM", new String[] { "AUM" });
+        alt.put("z", new String[] { "J" });
+        alt.put(".a", new String[] { "~" });
+        alt.put("|", new String[] { "." });
+        alt.put("||", new String[] { ".." });
+        return alt;
+    }
+
+    public HashMap<String, String[]> getMapping() {
         return this.mapping;
+    }
+
+    public HashMap<String, String[]> getAlternateMapping() {
+        return createAlternateMapping();
     }
 }

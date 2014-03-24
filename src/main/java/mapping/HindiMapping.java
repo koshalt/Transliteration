@@ -51,4 +51,8 @@ public class HindiMapping implements CharacterMapping {
     public HashMap<String, String[]> getMapping(){
         return this.mapping;
     }
+
+    public HashMap<String, String[]> getAlternateMapping() {
+        return new HashMap<>();
+    }
 }

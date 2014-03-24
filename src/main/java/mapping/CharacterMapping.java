@@ -8,4 +8,6 @@ import java.util.HashMap;
 public interface CharacterMapping {
 
     public HashMap<String, String[]> getMapping();
+
+    public HashMap<String, String[]> getAlternateMapping();
 }

@@ -7,7 +7,7 @@ public class TransliterateApp {
     public static void main(String[] args)
     {
         TransliterationEngine engine = new TransliterationEngine();
-        String result = engine.transliterate("priyanka chopra");
+        String result = engine.transliterate("kamalika sinha");
         System.out.println(result);
     }
 }
