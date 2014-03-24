@@ -13,16 +13,21 @@ import java.util.Map;
  */
 public class TransliterationEngine {
 
-    public String transliterate(String data, String sourceLanguage, String targetLanguage)
+    // Transliterates a given string from English to Hindi using ITRANS encoding
+    public String transliterate(String data)
     {
-        if (!(sourceLanguage.equals("english") && targetLanguage.equals("hindi")))
-        {
-            return "Source and/or target language  combination not implemented";
-        }
-
+        String[] words = data.split(" ");
         CharacterMapping englishMapping = new ItransAsciiMapping();
         CharacterMapping hindiMapping = new HindiMapping();
-        return transliterateHelper(data, englishMapping, hindiMapping);
+        for (int i = 0; i < words.length; i++) {
+            words[i] = transliterateHelper(words[i], englishMapping, hindiMapping);
+        }
+
+        StringBuilder result = new StringBuilder();
+        for (String currentWord : words) {
+            result.append(currentWord);
+        }
+        return result.toString();
     }
 
     private String transliterateHelper(String data, CharacterMapping englishMapping, CharacterMapping hindiMapping) {
@@ -33,6 +38,7 @@ public class TransliterationEngine {
         String tokenBuffer = "";
 
         HashMap<String, String> tokenMap = createTokenMap(englishMapping, hindiMapping);
+        HashMap<String, String> vowelMap = createVowelMap(englishMapping, hindiMapping);
         HashMap<String, String[]> englishTokenGroups = englishMapping.getMapping();
         HashMap<String, String[]> hindiTokenGroups = hindiMapping.getMapping();
 
@@ -58,13 +64,17 @@ public class TransliterationEngine {
                 String tempLetter = tokenMap.get(token);
                 if (tempLetter != null) {
                     if (hadConsonant) {
-                        String vowelMark = "!";
+                        String vowelMark = vowelMap.get(token);
                         if (vowelMark != null) {
                             buffer.insert(0, vowelMark);
                         } else if (!token.equals("a")) {
                             buffer.insert(0, hindiTokenGroups.get("virama")[0]);
                             buffer.insert(0, tempLetter);
+                        } else if (token.equals("a") && tokenBuffer.length() == 1 && i >= inputLength) {
+                            // special for names ending with 'a' since that needs reads as 'aa'
+                            buffer.insert(0, vowelMap.get("A"));
                         }
+
                     } else {
                         buffer.insert(0, tempLetter);
                     }
@@ -80,11 +90,6 @@ public class TransliterationEngine {
                     tokenBuffer = tokenBuffer.substring(1);
                 }
             }
-        }
-
-        if (hadConsonant)
-        {
-            buffer.insert(0, hindiTokenGroups.get("virama")[0]);
         }
 
         return buffer.reverse().toString();
@@ -121,5 +126,19 @@ public class TransliterationEngine {
             }
         }
         return tokenMapping;
+    }
+
+    // Create alternate mapping for vowel marks when vowels follow consonants
+    private HashMap<String, String> createVowelMap(CharacterMapping from, CharacterMapping to) {
+        HashMap<String, String> vowelMap = new HashMap<>();
+
+        String[] fromList = from.getMapping().get("vowels");
+        String[] toList = to.getMapping().get("vowelMarks");
+
+        for (int i = 1; i < fromList.length; i++) {
+            vowelMap.put(fromList[i], toList[i - 1]);
+        }
+
+        return vowelMap;
     }
 }
