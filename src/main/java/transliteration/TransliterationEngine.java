@@ -14,11 +14,13 @@ import java.util.Map;
 public class TransliterationEngine {
 
     // Transliterates a given string from English to Hindi using ITRANS encoding
-    // Since ITRANS is a case-sensitive encoding, the best results would be achieved by
-    // passing the data in all lower case
+
     public String transliterate(String data)
     {
-        String[] words = data.split(" ");
+        // Since ITRANS is a case-sensitive encoding, the best results would be achieved by
+        // passing the data in all lower case. Here, we optimistically convert to lower case
+        // as (first letter of) names are auto-converted to upper case in Roman script
+        String[] words = data.toLowerCase().split(" ");
         StringBuilder result = new StringBuilder();
         CharacterMapping englishMapping = new ItransAsciiMapping();
         CharacterMapping hindiMapping = new HindiMapping();
@@ -71,7 +73,7 @@ public class TransliterationEngine {
                             buffer.insert(0, hindiTokenGroups.get("virama")[0]);
                             buffer.insert(0, tempLetter);
                         } else if (token.equals("a") && tokenBuffer.length() == 1 && i >= inputLength) {
-                            // special for names ending with 'a' since that needs reads as 'aa'
+                            // special for names ending with 'a' since that reads as 'aa'
                             buffer.insert(0, vowelMap.get("A"));
                         }
 
@@ -144,9 +146,18 @@ public class TransliterationEngine {
 
         String[] fromList = from.getMapping().get("vowels");
         String[] toList = to.getMapping().get("vowelMarks");
+        HashMap<String, String[]> alternates = from.getAlternateMapping();
 
         for (int i = 1; i < fromList.length; i++) {
-            vowelMap.put(fromList[i], toList[i - 1]);
+            String key = fromList[i];
+            String value = toList[i - 1];
+            vowelMap.put(key, value);
+            String[] alt = alternates.get(key);
+            if (alt != null) {
+                for (String currentAlternate : alt) {
+                    vowelMap.put(currentAlternate, value);
+                }
+            }
         }
 
         return vowelMap;

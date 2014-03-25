@@ -5,10 +5,11 @@ import java.util.HashMap;
 /**
  * Created by kosh on 3/13/14.
  */
+// Class defines the character mapping for Devanagiri script
 public class HindiMapping implements CharacterMapping {
     private static String[] vowels = "अ आ इ ई उ ऊ ऋ ॠ ऌ ॡ ऎ ए ऐ ऒ ओ औ".split(" ");
 
-    private static String[] vowelMarks = "ा ि ी ु ू ृ ॄ ॢ ॣ ॆ े ै ॊ ो ौ'".split(" ");
+    private static String[] vowelMarks = "ा ि ी ु ू ृ ॄ ॢ ॣ ॆ े ै ॊ ो ौ".split(" ");
 
     private static String[] otherMarks = "ं ः ँ".split(" ");
 

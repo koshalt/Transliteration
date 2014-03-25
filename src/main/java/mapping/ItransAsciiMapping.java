@@ -5,6 +5,7 @@ import java.util.HashMap;
 /**
  * Created by kosh on 3/13/14.
  */
+// Class defines the mappings in english for devanagiri script based on the ITRANS encoding
 public class ItransAsciiMapping implements CharacterMapping {
 
     private static String[] vowels = "a A i I u U RRi RRI LLi LLI  e ai  o au".split(" ");
@@ -28,8 +29,6 @@ public class ItransAsciiMapping implements CharacterMapping {
     private static String[] comboAccent = "\\'H \\_H \\'M \\_M".split(" ");
 
     private static String[] other = "q K G z .D .Dh f Y R".split(" ");
-
-
 
     private HashMap<String, String[]> mapping;
 
@@ -71,6 +70,7 @@ public class ItransAsciiMapping implements CharacterMapping {
         alt.put(".a", new String[] { "~" });
         alt.put("|", new String[] { "." });
         alt.put("||", new String[] { ".." });
+        alt.put("m", new String[] { "M" });
         return alt;
     }
 
