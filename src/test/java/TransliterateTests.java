@@ -1,4 +1,3 @@
-import junit.framework.Assert;
 import org.junit.Test;
 import transliteration.TransliterationEngine;
 
@@ -15,16 +14,18 @@ public class TransliterateTests {
     public void NotNullNameTest()
     {
         String result = engine.transliterate("asha sen");
-        Assert.assertNotNull(result);
+        assertNotNull(result);
+        assertEquals("अशा सेन", result);
     }
 
     @Test
     public void CaseInsensitiveNameTest() {
-        String result1 = engine.transliterate("asha");
-        String result2 = engine.transliterate("ASha");
-        Assert.assertNotNull(result1);
+        String result1 = engine.transliterate("asha sen");
+        String result2 = engine.transliterate("ASha SEN");
+        assertNotNull(result1);
         assertNotNull(result2);
-        Assert.assertEquals(result1, result2);
+        assertEquals(result1, result2);
+        assertEquals("अशा सेन", result1);
     }
 
     @Test
