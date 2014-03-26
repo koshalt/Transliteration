@@ -29,7 +29,7 @@ public class HindiMapping implements CharacterMapping {
 
     private static String[] candra = "ॅ".split(" ");
 
-    private static String[] other = "क़ ख़ ग़ ज़ ड़ ढ़ फ़ य़ ऱ".split(" ");
+    private static String[] other = "़क ़ख ़ग ़ज ़ड ़ढ ़फ ़य ़र"  .split(" ");
 
     private HashMap<String, String[]> mapping;
 

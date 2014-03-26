@@ -33,4 +33,11 @@ public class TransliterateTests {
         String result = engine.transliterate("asha sen");
         assertEquals(2, result.split(" ").length);
     }
+
+    @Test
+    public void SpaceNameTest2() {
+        String result = engine.transliterate("franklin huster");
+        System.out.println(result);
+        //assertEquals(2, result.split(" ").length);
+    }
 }

@@ -21,6 +21,11 @@ public class TransliterationEngine {
         // passing the data in all lower case. Here, we optimistically convert to lower case
         // as (first letter of) names are auto-converted to upper case in Roman script
         String[] words = data.toLowerCase().split(" ");
+
+        // NOTE:  The conversion to lower case results in a hybrid scheme between ITRANS and Velthuis.
+        // While this might not be an ideal case, we consider this an acceptable risk since our data merge
+        // takes place manually (humans reading), where the enunciation of the name/word needs to be similar
+        // but not perfect.
         StringBuilder result = new StringBuilder();
         CharacterMapping englishMapping = new ItransAsciiMapping();
         CharacterMapping hindiMapping = new HindiMapping();
