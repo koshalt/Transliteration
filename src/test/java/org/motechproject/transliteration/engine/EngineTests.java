@@ -1,5 +1,6 @@
+package org.motechproject.transliteration.engine;
+
 import org.junit.Test;
-import transliteration.TransliterationEngine;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -7,7 +8,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by kosh on 3/13/14.
  */
-public class TransliterateTests {
+public class EngineTests {
     TransliterationEngine engine = new TransliterationEngine();
 
     @Test
@@ -32,12 +33,5 @@ public class TransliterateTests {
     public void SpaceNameTest() {
         String result = engine.transliterate("asha sen");
         assertEquals(2, result.split(" ").length);
-    }
-
-    @Test
-    public void SpaceNameTest2() {
-        String result = engine.transliterate("franklin huster");
-        System.out.println(result);
-        //assertEquals(2, result.split(" ").length);
     }
 }

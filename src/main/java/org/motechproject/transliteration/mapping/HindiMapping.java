@@ -1,4 +1,6 @@
-package mapping;
+package org.motechproject.transliteration.mapping;
+
+import org.motechproject.transliteration.mapping.CharacterMapping;
 
 import java.util.HashMap;
 

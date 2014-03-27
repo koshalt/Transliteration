@@ -1,8 +1,8 @@
-package transliteration;
+package org.motechproject.transliteration.engine;
 
-import mapping.CharacterMapping;
-import mapping.HindiMapping;
-import mapping.ItransAsciiMapping;
+import org.motechproject.transliteration.mapping.CharacterMapping;
+import org.motechproject.transliteration.mapping.HindiMapping;
+import org.motechproject.transliteration.mapping.ItransAsciiMapping;
 
 import java.util.Arrays;
 import java.util.HashMap;
