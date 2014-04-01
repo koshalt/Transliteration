@@ -1,6 +1,11 @@
 package org.motechproject.transliteration.engine;
 
+import junit.framework.Assert;
 import org.junit.Test;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,5 +38,45 @@ public class EngineTests {
     public void SpaceNameTest() {
         String result = engine.transliterate("asha sen");
         assertEquals(2, result.split(" ").length);
+    }
+
+    @Test
+    public void BulkDataTest() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("/home/kosh/dev/sample.txt"));
+            String line = br.readLine();
+            StringBuilder results = new StringBuilder();
+
+            while (line != null) {
+                String result = engine.transliterate(line);
+                results.append(result);
+                results.append(System.lineSeparator());
+                line = br.readLine();
+            }
+
+            Assert.assertNotNull(results);
+            System.out.println(results.toString());
+        } catch (FileNotFoundException fe) {
+            Assert.fail();
+        } catch (IOException ie) {
+
+        }
+
+        /*
+        try {
+            FileInputStream inputStream = new FileInputStream("/home/kosh/dev/sample.txt");
+            BufferedInputStream bis = new BufferedInputStream(inputStream);
+            DataInputStream dis = new DataInputStream(bis);
+
+            while (dis.available() != 0) {
+                System.out.println(dis.readLine());
+            }
+        } catch (FileNotFoundException fe) {
+            Assert.fail();
+        } catch (IOException ie) {
+            Assert.fail();
+        }
+        */
+
     }
 }

@@ -15,17 +15,17 @@ public class TransliterationEngine {
 
     // Transliterates a given string from English to Hindi using ITRANS encoding
 
-    public String transliterate(String data)
-    {
+    public String transliterate(String data) {
         // Since ITRANS is a case-sensitive encoding, the best results would be achieved by
         // passing the data in all lower case. Here, we optimistically convert to lower case
         // as (first letter of) names are auto-converted to upper case in Roman script
-        String[] words = data.toLowerCase().split(" ");
 
         // NOTE:  The conversion to lower case results in a hybrid scheme between ITRANS and Velthuis.
         // While this might not be an ideal case, we consider this an acceptable risk since our data merge
         // takes place manually (read by humans), where the enunciation of the name/word needs to be similar
         // but not perfect.
+        // TODO: Consider forcing the consumer of the module to call the API in lower case?
+        String[] words = data.toLowerCase().split(" ");
         StringBuilder result = new StringBuilder();
         CharacterMapping englishMapping = new ItransAsciiMapping();
         CharacterMapping hindiMapping = new HindiMapping();
@@ -40,7 +40,7 @@ public class TransliterationEngine {
     private String transliterateHelper(String data, CharacterMapping englishMapping, CharacterMapping hindiMapping) {
         int maxTokenLength = computeMaxTokenLength(englishMapping);
         int inputLength = data.length();
-        boolean hadConsonant = false;
+        boolean followsConsonant = false;
         StringBuilder buffer = new StringBuilder(inputLength);
         String tokenBuffer = "";
 
@@ -49,9 +49,10 @@ public class TransliterationEngine {
         HashMap<String, String[]> englishTokenGroups = englishMapping.getMapping();
         HashMap<String, String[]> hindiTokenGroups = hindiMapping.getMapping();
 
+        // read the input char by char
+        for(int i = 0; i < inputLength || !tokenBuffer.isEmpty(); i++) {
 
-        for(int i = 0; i < inputLength || !tokenBuffer.isEmpty(); i++){
-
+            // if we are still in the range of our input, add char to token buffer
             if (i < inputLength) {
                 char currentChar = data.charAt(i);
                 int difference = maxTokenLength - tokenBuffer.length();
@@ -63,14 +64,14 @@ public class TransliterationEngine {
                 }
             }
 
-            // match token substrings
+            // match token substrings. start from max token length in target language and work backwards
             for(int j = 0; j < maxTokenLength; j++) {
                 int tokenLength = maxTokenLength - j;
                 tokenLength = (tokenLength > tokenBuffer.length()) ? tokenBuffer.length() : tokenLength;
                 String token = tokenBuffer.substring(0, tokenLength);
                 String tempLetter = tokenMap.get(token);
                 if (tempLetter != null) {
-                    if (hadConsonant) {
+                    if (followsConsonant) {
                         String vowelMark = vowelMap.get(token);
                         if (vowelMark != null) {
                             buffer.insert(0, vowelMark);
@@ -79,19 +80,21 @@ public class TransliterationEngine {
                             buffer.insert(0, tempLetter);
                         } else if (token.equals("a") && tokenBuffer.length() == 1 && i >= inputLength) {
                             // special for names ending with 'a' since that reads as 'aa'
+                            // This might also be a bad idea for a transliteration platform since other languages
+                            // don't necessarily follow this rule.
                             buffer.insert(0, vowelMap.get("A"));
                         }
 
                     } else {
                         buffer.insert(0, tempLetter);
                     }
-                    hadConsonant = Arrays.asList(englishTokenGroups.get("consonants")).contains(token);
+                    followsConsonant = Arrays.asList(englishTokenGroups.get("consonants")).contains(token);
                     // trim the buffer
                     tokenBuffer = tokenBuffer.substring(tokenLength);
                     break;
                 } else if (j == maxTokenLength - 1) {
-                    if (hadConsonant) {
-                        hadConsonant = false;
+                    if (followsConsonant) {
+                        followsConsonant = false;
                     }
                     buffer.insert(0, token);
                     tokenBuffer = tokenBuffer.substring(1);
@@ -102,10 +105,8 @@ public class TransliterationEngine {
         return buffer.reverse().toString();
     }
 
-    // Get the maximum token length from the list of all possible tokens in the from
-    // language
-    private int computeMaxTokenLength(CharacterMapping mappingData)
-    {
+    // Get the maximum token length from the list of all possible tokens in the from language
+    private int computeMaxTokenLength(CharacterMapping mappingData) {
         int max = -1;
         for (Map.Entry<String, String[]> entry : mappingData.getMapping().entrySet()) {
             for (String token : entry.getValue()) {
