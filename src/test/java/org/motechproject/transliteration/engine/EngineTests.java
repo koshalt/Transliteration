@@ -1,11 +1,6 @@
 package org.motechproject.transliteration.engine;
 
-import junit.framework.Assert;
 import org.junit.Test;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,6 +35,7 @@ public class EngineTests {
         assertEquals(2, result.split(" ").length);
     }
 
+    /*
     @Test
     public void BulkDataTest() {
         try {
@@ -76,7 +72,7 @@ public class EngineTests {
         } catch (IOException ie) {
             Assert.fail();
         }
-        */
 
-    }
+
+    }*/
 }
